@@ -30,9 +30,14 @@ func (e *Exporter) Flush() error {
 }
 
 func (e *Exporter) addItem(res outline.Resource) {
-	item := e.NewItem(res.Name).Subtitle(res.Describe).Autocomplete(res.Name)
-	if res.URL != "" {
+	item := e.NewItem(res.Name).Subtitle(res.Describe).UID(res.ID).Valid(true)
+
+	switch res.Type {
+	case outline.ResourceDocument:
+		item.Arg(res.URL)
 		item.ActionForType(aw.TypeURL, res.URL)
+	case outline.ResourceCollection, outline.ResourceTemplate:
+		item.Arg(res.ID)
 	}
 }
 

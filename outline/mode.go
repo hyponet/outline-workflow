@@ -3,6 +3,7 @@ package outline
 const (
 	ResourceCollection = "collection"
 	ResourceDocument   = "document"
+	ResourceTemplate   = "template"
 	ResourceEvent      = "event"
 )
 
