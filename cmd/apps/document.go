@@ -1,7 +1,6 @@
 package apps
 
 import (
-	"context"
 	"github.com/hyponet/outline-workflow/exporter"
 	"github.com/spf13/cobra"
 )
@@ -28,7 +27,7 @@ var searchDocumentCmd = &cobra.Command{
 	Short: "search outline document",
 	Long:  `integration your Outline data into a workflow`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		result, err := MustNewOutline().SearchDocuments(context.Background(), queryContent)
+		result, err := MustNewOutline().SearchDocuments(cmd.Context(), queryContent)
 		if err != nil {
 			return err
 		}

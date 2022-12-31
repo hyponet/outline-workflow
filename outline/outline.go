@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/antihax/optional"
 	"github.com/hyponet/outline-workflow/outline/client"
+	"strings"
 )
 
 type Outline struct {
@@ -42,9 +43,9 @@ func (o *Outline) SearchDocuments(ctx context.Context, query string) ([]Resource
 		results = append(results, Resource{
 			ID:       doc.Document.Id,
 			Name:     doc.Document.Title,
-			Describe: doc.Document.Text,
+			Describe: documentDesc(doc.Document),
 			Type:     ResourceDocument,
-			URL:      fmt.Sprintf("%s/doc/%s-%s", Host, doc.Document.Id, doc.Document.UrlId),
+			URL:      documentURL(doc.Document),
 		})
 	}
 	return results, err
@@ -64,4 +65,23 @@ func New(config ConnConfig) (*Outline, error) {
 		HTTPClient:    NewHttpClient(config),
 	})}
 	return o, nil
+}
+
+func documentURL(doc *client.Document) string {
+	return fmt.Sprintf("%s/doc/%s-%s", Host, doc.Id, doc.UrlId)
+}
+
+func documentDesc(doc *client.Document) string {
+	lines := strings.Split(doc.Text, "\n")
+	for _, l := range lines {
+		content := strings.TrimSpace(l)
+		if strings.HasPrefix(content, "#") {
+			continue
+		}
+		if len(content) == 0 {
+			continue
+		}
+		return content
+	}
+	return doc.Text
 }
